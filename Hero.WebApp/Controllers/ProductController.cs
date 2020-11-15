@@ -71,16 +71,14 @@ namespace Hero.WebApp.Controllers
             var discount = model.Commission * (50 / 100);
             var totalPriceAfterDiscount = model.TotalPrice - discount;
 
-            if (totalPriceAfterDiscount <= 0)
-            {
-                return this.ErrorResponseResult("The product not available for the selected date");
-            }
+            //if (totalPriceAfterDiscount <= 0)
+            //{
+            //    return this.ErrorResponseResult("The product not available for the selected date");
+            //}
 
             return this.SuccessResponseResult(new
             {
-                Discount = discount,
-                TotalPrice = totalPriceAfterDiscount,
-                Currency = model.CurrencyIso
+                Message = $"The product is available to book on <b>{bookingDateTime.ToString("D")}</b> with price <b>${totalPriceAfterDiscount} AUD</b>. Do you want to continue to book the product?"
             });
         }
 

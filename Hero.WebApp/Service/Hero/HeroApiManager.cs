@@ -103,5 +103,11 @@ namespace Hero.WebApp.Service.Hero
 
             return response;
         }
+
+        #region Private Methods
+
+
+
+        #endregion
     }
 }
