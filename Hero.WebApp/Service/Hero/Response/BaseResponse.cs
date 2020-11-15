@@ -28,6 +28,14 @@ namespace Hero.WebApp.Service.Hero.Response
             this._errorMessages.Add(message);
         }
 
+        public void AddErrorMessages(string[] messages)
+        {
+            foreach (var message in messages)
+            {
+                this._errorMessages.Add(message);
+            }
+        }
+
         #endregion Public Methods
     }
 }
