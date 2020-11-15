@@ -7,13 +7,13 @@ namespace Hero.WebApp.DataModel.Hero
         #region Properties
 
         [JsonProperty(PropertyName = "rrp")]
-        public decimal PricePerPax { get; set; }
+        public double PricePerPax { get; set; }
 
         [JsonProperty(PropertyName = "commission")]
-        public decimal Commission { get; set; }
+        public double Commission { get; set; }
 
         [JsonProperty(PropertyName = "totalRrp")]
-        public decimal TotalPrice { get; set; }
+        public double TotalPrice { get; set; }
 
         [JsonProperty(PropertyName = "currencyIso")]
         public string CurrencyIso { get; set; }

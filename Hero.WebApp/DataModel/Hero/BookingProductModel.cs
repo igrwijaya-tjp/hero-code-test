@@ -15,6 +15,9 @@ namespace Hero.WebApp.DataModel.Hero
         [JsonProperty(PropertyName = "dateCheckIn")]
         public string DateCheckIn { get; set; }
 
+        [JsonProperty(PropertyName = "nights")]
+        public int Nights { get; set; }
+
         #endregion Properties
     }
 }

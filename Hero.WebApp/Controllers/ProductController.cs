@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hero.WebApp.Service.Hero;
@@ -45,6 +46,60 @@ namespace Hero.WebApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Fetch([FromQuery] string keyword)
+        {
+            if (string.IsNullOrEmpty(keyword))
+            {
+                return this.ErrorResponseResult("Keyword cannot empty");
+            }
+
+            var searchResponse = await this._heroApiManager.SearchAsync(keyword);
+            if (searchResponse.IsError())
+            {
+                return this.ErrorResponseResult(searchResponse);
+            }
+
+            var date = DateTime.Now;
+            var result = new List<object>();
+
+            while(date < DateTime.Now.AddDays(3))
+            {
+                foreach (var product in searchResponse.Models)
+                {
+                    var scheduleResponse = await this._heroApiManager.GetScheduleAsync(product.Id, date);
+                    if (scheduleResponse.IsError())
+                    {
+                        return this.ErrorResponseResult(scheduleResponse);
+                    }
+
+                    if (searchResponse.Models.Any())
+                    {
+                        var getProductResponse = await this._heroApiManager.GetProductPriceAsync(product.Id, date);
+                        if (getProductResponse.IsError())
+                        {
+                            return this.ErrorResponseResult(getProductResponse);
+                        }
+
+                        if (getProductResponse.Model.TotalPrice > 0)
+                        {
+                            result.Add(new
+                            {
+                                Schedules = searchResponse.Models,
+                                Product = getProductResponse.Model,
+                                DateAvailability = date
+                            });
+                        }
+                    }
+
+                }
+
+                date = date.AddDays(1);
+            }
+
+            return this.SuccessResponseResult(result);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> CheckAvailability([FromQuery] int productId, string bookDate)
         {
             DateTime.TryParse(bookDate, out DateTime bookingDateTime);
@@ -68,7 +123,7 @@ namespace Hero.WebApp.Controllers
 
             var model = getProductResponse.Model;
 
-            var discount = model.Commission * (50 / 100);
+            var discount = model.Commission * 0.5;
             var totalPriceAfterDiscount = model.TotalPrice - discount;
 
             //if (totalPriceAfterDiscount <= 0)

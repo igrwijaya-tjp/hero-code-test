@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hero.WebApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class BookingController : HeroBaseController
     {
@@ -63,13 +63,23 @@ namespace Hero.WebApp.Controllers
                 return this.ErrorResponseResult(finalizeBookingResponse);
             }
 
-            var getVoucherResponse = await this.GetVoucherAsync(createBookingResponse.Model, createPaxResponse.Model);
+            return this.SuccessResponseResult(new
+            {
+                BookingId = createBookingResponse.Model,
+                PaxId = createPaxResponse.Model
+            });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetVoucher([FromQuery]string bookingId, string paxId)
+        {
+            var getVoucherResponse = await this.GetVoucherAsync(bookingId, paxId);
             if (getVoucherResponse.IsError())
             {
                 return this.ErrorResponseResult(getVoucherResponse);
             }
 
-            return this.SuccessResponseResult(getVoucherResponse.Model);
+            return this.SuccessResponseResult(getVoucherResponse.Model.VoucherUrl);
         }
 
         #endregion Public Methods
@@ -106,7 +116,8 @@ namespace Hero.WebApp.Controllers
             {
                 ProductId = webRequest.ProductId,
                 DateCheckIn = webRequest.BookDate,
-                PaxIds = new string[] { paxId }
+                PaxIds = new string[] { paxId },
+                Nights = 1
             };
 
             var apiRequest = new CreateBookingRequest();
@@ -125,9 +136,9 @@ namespace Hero.WebApp.Controllers
             return response;
         }
 
-        private async Task<GenericReadModelResponse<decimal>> GetTotalPriceAsync(int productId, string bookDate)
+        private async Task<GenericReadModelResponse<double>> GetTotalPriceAsync(int productId, string bookDate)
         {
-            var response = new GenericReadModelResponse<decimal>();
+            var response = new GenericReadModelResponse<double>();
 
             DateTime.TryParse(bookDate, out DateTime bookingDateTime);
 
@@ -140,7 +151,7 @@ namespace Hero.WebApp.Controllers
 
             var model = apiResponse.Model;
 
-            var discount = model.Commission * (50 / 100);
+            var discount = model.Commission * 0.5;
             var totalPriceAfterDiscount = model.TotalPrice - discount;
 
             response.Model = totalPriceAfterDiscount;
@@ -148,7 +159,7 @@ namespace Hero.WebApp.Controllers
             return response;
         }
 
-        private async Task<BaseResponse> CreatePaymentAsync(string bookingId, decimal amount)
+        private async Task<BaseResponse> CreatePaymentAsync(string bookingId, double amount)
         {
             var response = new BaseResponse();
             var apiRequest = new CreatePaymentRequest

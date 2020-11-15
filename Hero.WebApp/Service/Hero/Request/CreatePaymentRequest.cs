@@ -10,7 +10,7 @@ namespace Hero.WebApp.Service.Hero.Request
         public string BookingId { get; set; }
 
         [JsonProperty(PropertyName = "amount")]
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
 
         [JsonProperty(PropertyName = "method")]
         public int Method { get; set; }

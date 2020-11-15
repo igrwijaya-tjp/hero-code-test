@@ -1,5 +1,9 @@
-import { Button, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import { Button, Col, Form, FormGroup, Input, Label } from 'reactstrap';
 import React, { Component } from 'react';
+
+import { InformationDialog } from '../../components/dialog/InformationDialog';
+import { PopupSpinner } from '../../components/spinner/PopupSpinner';
+import bookingApiService from '../../api/booking/BookingApiService';
 
 export class Booking extends Component {
 
@@ -10,7 +14,12 @@ export class Booking extends Component {
         firstName: '',
         lastName: '',
         phoneNumber: '',
-        email: ''
+        email: '',
+        isLoading: false,
+        informationDialog: {
+          show: false,
+          message: ''
+        }
     }
   }
 
@@ -32,13 +41,57 @@ export class Booking extends Component {
     }));
   };
 
+  onSubmit = e => {
+    e.preventDefault();
+
+    this.setState({
+      isLoading: true
+    });
+
+    const request = {
+      ProductId: parseFloat(window.localStorage.getItem('booking__productId')),
+      BookDate: window.localStorage.getItem('booking__bookDate'),
+      FirstName: this.state.firstName,
+      LastName: this.state.lastName,
+      PhoneNumber: this.state.phoneNumber,
+      EmailAddress: this.state.email,
+    };
+
+    bookingApiService.proceed(request)
+    .then(response => {
+      window.location.href = "/booking-success/" + response.data.bookingId + '/' + response.data.paxId;
+    }).catch(errorResponse => {
+      this.showInformationDialog(errorResponse.message);
+    });
+  }
+
+  showInformationDialog = (message) => {
+    this.setState({
+      isLoading: false,
+      informationDialog: {
+        show: true,
+        message: message
+      }
+    });
+  }
+
+  hideInformationDialog = () => {
+    this.setState({
+      isLoading: false,
+      informationDialog: {
+        show: false,
+        message: ''
+      }
+    });
+  }
+
   render() {
     return (
       <div id="home">
         <section id="booking-form">
             <h5>Booking Form</h5>
             <hr/>
-        <Form>
+        <Form onSubmit={this.onSubmit}>
         <FormGroup row>
         <Label for="firstName" sm={2}>First Name</Label>
         <Col sm={10}>
@@ -74,6 +127,8 @@ export class Booking extends Component {
       </FormGroup>
     </Form>
         </section>
+        {this.state.isLoading && <PopupSpinner />}
+        {this.state.informationDialog.show && <InformationDialog message={this.state.informationDialog.message} onHide={this.hideInformationDialog} />}
       </div>
     );
   }
