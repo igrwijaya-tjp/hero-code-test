@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Hero.WebApp.DataModel.Hero
 {
@@ -6,19 +6,19 @@ namespace Hero.WebApp.DataModel.Hero
     {
         #region Properties
 
-        [JsonPropertyName("Id")]
+        [JsonProperty(PropertyName = "Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("Name")]
+        [JsonProperty(PropertyName = "Name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("ImageUrl")]
+        [JsonProperty(PropertyName = "ImageUrl")]
         public string ImageUrl { get; set; }
 
-        [JsonPropertyName("SupplierName")]
+        [JsonProperty(PropertyName = "SupplierName")]
         public string SupplierName { get; set; }
 
-        [JsonPropertyName("Address")]
+        [JsonProperty(PropertyName = "FormattedAddressName")]
         public string Address { get; set; }
 
         #endregion Properties

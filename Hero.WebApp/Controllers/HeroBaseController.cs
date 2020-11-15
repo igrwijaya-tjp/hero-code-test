@@ -13,7 +13,7 @@ namespace Hero.WebApp.Controllers
         {
             return this.Ok(new
             {
-                IsSuccess = false,
+                IsSuccess = true,
                 Data = data
             });
         }
