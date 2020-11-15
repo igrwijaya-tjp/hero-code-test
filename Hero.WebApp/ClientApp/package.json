@@ -26,17 +26,44 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.18.3",
-    "nan": "^2.14.1"
+    "nan": "^2.14.1",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "plugin:prettier/recommended"
+    ],
+    "rules": {
+      "quotes": [
+        "error",
+        "double"
+      ],
+      "prettier/prettier": [
+        "error",
+        {
+          "singleQuote": false,
+          "parser": "flow"
+        }
+      ],
+      "no-useless-constructor": "off",
+      "jsx-a11y/anchor-is-valid": 0
+    }
+  },
+  "prettier": {
+    "printWidth": 90,
+    "bracketSpacing": false,
+    "jsxSingleQuote": false
   },
   "scripts": {
     "start": "rimraf ./build && react-scripts start",
     "build": "react-scripts build",
     "test": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "lint": "eslint ./src/"
+    "lint": "eslint ./src/",
+    "format": "prettier --write \"**/*.+(js|jsx|json|css|md)\""
   },
   "browserslist": {
     "production": [

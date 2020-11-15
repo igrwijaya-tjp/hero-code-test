@@ -1,13 +1,12 @@
-import { Button, Form, FormGroup, Input, Label, Modal, ModalBody } from 'reactstrap';
-import React, { Component } from 'react';
+import {Button, Form, FormGroup, Input, Label, Modal, ModalBody} from "reactstrap";
+import React, {Component} from "react";
 
-import { ConfirmationDialog } from '../dialog/ConfirmationDialog';
-import { InformationDialog } from '../dialog/InformationDialog';
-import { PopupSpinner } from '../spinner/PopupSpinner';
-import productApiService from '../../api/product/ProductApiService';
+import {ConfirmationDialog} from "../dialog/ConfirmationDialog";
+import {InformationDialog} from "../dialog/InformationDialog";
+import {PopupSpinner} from "../spinner/PopupSpinner";
+import productApiService from "../../api/product/ProductApiService";
 
 export class BookingModal extends Component {
-
   constructor(props) {
     super(props);
 
@@ -17,40 +16,42 @@ export class BookingModal extends Component {
       bookDate: new Date(),
       informationDialog: {
         show: false,
-        message: ''
+        message: "",
       },
       confirmationDialog: {
         show: false,
-        message: ''
-      }
-    }
+        message: "",
+      },
+    };
   }
 
-  formListener = event => {
+  formListener = (event) => {
     const field = event.target.name;
     const value = event.target.value;
 
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       ...prevState,
-      [field]: value
+      [field]: value,
     }));
   };
 
-  checkSchedule = event => {
+  checkSchedule = (event) => {
     event.preventDefault();
 
     this.setState({
       isOpenModal: false,
-      isProcessingRequest: true
-    })
-
-    productApiService.checkAvailability(this.props.productId, this.state.bookDate)
-    .then(response => {
-      this.showConfirmationDialog(response.data.message);
-    }).catch(errorResponse => {
-      this.showInformationDialog(errorResponse.message);
+      isProcessingRequest: true,
     });
-  }
+
+    productApiService
+      .checkAvailability(this.props.productId, this.state.bookDate)
+      .then((response) => {
+        this.showConfirmationDialog(response.data.message);
+      })
+      .catch((errorResponse) => {
+        this.showInformationDialog(errorResponse.message);
+      });
+  };
 
   showInformationDialog = (message) => {
     this.setState({
@@ -58,10 +59,10 @@ export class BookingModal extends Component {
       isProcessingRequest: false,
       informationDialog: {
         show: true,
-        message: message
-      }
+        message: message,
+      },
     });
-  }
+  };
 
   hideInformationDialog = () => {
     this.setState({
@@ -69,10 +70,10 @@ export class BookingModal extends Component {
       isProcessingRequest: false,
       informationDialog: {
         show: false,
-        message: ''
-      }
+        message: "",
+      },
     });
-  }
+  };
 
   showConfirmationDialog = (message) => {
     this.setState({
@@ -80,10 +81,10 @@ export class BookingModal extends Component {
       isProcessingRequest: false,
       confirmationDialog: {
         show: true,
-        message: message
-      }
+        message: message,
+      },
     });
-  }
+  };
 
   hideConfirmationDialog = () => {
     this.setState({
@@ -91,43 +92,57 @@ export class BookingModal extends Component {
       isProcessingRequest: false,
       confirmationDialog: {
         show: false,
-        message: ''
-      }
+        message: "",
+      },
     });
-  }
+  };
 
   proceedBooking = () => {
-    window.localStorage.setItem('booking__productId', this.props.productId);
-    window.localStorage.setItem('booking__bookDate', this.state.bookDate);
+    window.localStorage.setItem("booking__productId", this.props.productId);
+    window.localStorage.setItem("booking__bookDate", this.state.bookDate);
     window.location.href = "/proceed-booking";
-  }
+  };
 
   render() {
     return (
-        <>
+      <>
         <Modal isOpen={this.state.isOpenModal}>
-            <ModalBody className="text-center">
-                <Form onSubmit={this.checkSchedule}>
-                <FormGroup>
-        <Label for="exampleDate">When you want to book?</Label>
-        <Input
-          value={this.state.bookDate} 
-          onChange={this.formListener}
-          type="date"
-          name="bookDate"
-          placeholder="Please select the date"
-        />
-      </FormGroup>
-      <Button color="primary">Check Schedule</Button>{' '}
-      <Button color="secondary" type="button" onClick={this.props.onHide}>Close</Button>
-                </Form>
-            </ModalBody>
+          <ModalBody className="text-center">
+            <Form onSubmit={this.checkSchedule}>
+              <FormGroup>
+                <Label for="exampleDate">When you want to book?</Label>
+                <Input
+                  value={this.state.bookDate}
+                  onChange={this.formListener}
+                  type="date"
+                  name="bookDate"
+                  placeholder="Please select the date"
+                />
+              </FormGroup>
+              <Button color="primary">Check Schedule</Button>{" "}
+              <Button color="secondary" type="button" onClick={this.props.onHide}>
+                Close
+              </Button>
+            </Form>
+          </ModalBody>
         </Modal>
-        {this.state.isProcessingRequest && <PopupSpinner message="checking availability..." />}
-        {this.state.informationDialog.show && <InformationDialog message={this.state.informationDialog.message} onHide={this.hideInformationDialog} />}
-        {this.state.confirmationDialog.show && <ConfirmationDialog message={this.state.confirmationDialog.message} onYes={this.proceedBooking} onNo={this.hideConfirmationDialog} />}
-        </>
-        
+        {this.state.isProcessingRequest && (
+          <PopupSpinner message="checking availability..." />
+        )}
+        {this.state.informationDialog.show && (
+          <InformationDialog
+            message={this.state.informationDialog.message}
+            onHide={this.hideInformationDialog}
+          />
+        )}
+        {this.state.confirmationDialog.show && (
+          <ConfirmationDialog
+            message={this.state.confirmationDialog.message}
+            onYes={this.proceedBooking}
+            onNo={this.hideConfirmationDialog}
+          />
+        )}
+      </>
     );
   }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -166,7 +167,14 @@ namespace Hero.WebApp.Service.Hero
 
                 if (!apiResponse.IsSuccessStatusCode)
                 {
-                    response.AddErrorMessage($"Failed to send request with reason: {apiResponse.ReasonPhrase} and status code: {apiResponse.StatusCode}");
+                    var message = string.Format(
+                        CultureInfo.InvariantCulture,
+                        Resource.HeroApi_FailedResponseMessageFormat,
+                        apiResponse.ReasonPhrase,
+                        apiResponse.StatusCode);
+
+                    response.AddErrorMessage(message);
+
                     return default;
                 }
 
@@ -178,7 +186,7 @@ namespace Hero.WebApp.Service.Hero
             catch (Exception ex)
             {
                 //TODO: Store exception to internal error handling (ELMAH, etc)
-                response.AddErrorMessage($"Error when sending request");
+                response.AddErrorMessage(Resource.HeroApi_ExceptionMessage);
             }
 
             return default;

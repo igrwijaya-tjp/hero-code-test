@@ -71,7 +71,7 @@ namespace Hero.WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetVoucher([FromQuery]string bookingId, string paxId)
+        public async Task<IActionResult> GetVoucher([FromQuery] string bookingId, string paxId)
         {
             var getVoucherResponse = await this.GetVoucherAsync(bookingId, paxId);
             if (getVoucherResponse.IsError())

@@ -1,7 +1,7 @@
-import Axios from 'axios';
+import Axios from "axios";
 
 export default class BaseApiService {
-  apiUrl = '';
+  apiUrl = "";
 
   constructor(controller) {
     this.apiUrl = `api/${controller}`;
@@ -9,7 +9,7 @@ export default class BaseApiService {
 
   getHttpHeader() {
     this.httpHeader = {
-        'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     };
 
     return this.httpHeader;
@@ -18,9 +18,9 @@ export default class BaseApiService {
   postRequest(url, jsonData, successCallback, failCallback) {
     return new Promise((resolve, reject) => {
       Axios.post(url, jsonData, {
-        headers: this.getHttpHeader()
+        headers: this.getHttpHeader(),
       })
-        .then(response => {
+        .then((response) => {
           if (response.data.isSuccess) {
             if (successCallback !== undefined) {
               successCallback(response.data);
@@ -35,7 +35,7 @@ export default class BaseApiService {
             reject(response.data);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           if (failCallback !== undefined) {
             failCallback(error);
           }
@@ -48,9 +48,9 @@ export default class BaseApiService {
   getRequest(url, successCallback, failCallback) {
     return new Promise((resolve, reject) => {
       Axios.get(url, {
-        headers: this.getHttpHeader()
+        headers: this.getHttpHeader(),
       })
-        .then(response => {
+        .then((response) => {
           if (response.data.isSuccess) {
             if (successCallback !== undefined) {
               successCallback(response.data);
@@ -65,7 +65,7 @@ export default class BaseApiService {
             reject(response.data);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           if (failCallback !== undefined) {
             failCallback(error);
           }
@@ -74,5 +74,4 @@ export default class BaseApiService {
         });
     });
   }
-
 }
