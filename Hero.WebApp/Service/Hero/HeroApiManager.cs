@@ -22,7 +22,7 @@ namespace Hero.WebApp.Service.Hero
             var response = new GenericGetModelResponse<SearchResponseModel>();
             try
             {
-                var getRequestResponse = await _httpClient.GetAsync($"search?q={keyword}&lat=0&lng=0");
+                var getRequestResponse = await _httpClient.GetAsync($"search?q={keyword}&lat=-24.9922916&lng=115.224928");
                 var apiResponse = getRequestResponse.EnsureSuccessStatusCode();
 
                 if (!apiResponse.IsSuccessStatusCode)
@@ -46,7 +46,7 @@ namespace Hero.WebApp.Service.Hero
             return response;
         }
 
-        public async Task<GenericReadModelResponse<ProductPriceModel>> GetProductPriceAsync(int productId, DateTime dateCheckIn, int nights)
+        public async Task<GenericReadModelResponse<ProductPriceModel>> GetProductPriceAsync(int productId, DateTime dateCheckIn)
         {
             var response = new GenericReadModelResponse<ProductPriceModel>();
             try

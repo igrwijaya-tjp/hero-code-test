@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Hero.WebApp.Service.Hero;
 using Microsoft.AspNetCore.Mvc;
@@ -44,36 +45,39 @@ namespace Hero.WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSchedule([FromQuery] int id, string startDate)
+        public async Task<IActionResult> CheckAvailability([FromQuery] int productId, string bookDate)
         {
-            DateTime.TryParse(startDate, out DateTime bookingDateTime);
+            DateTime.TryParse(bookDate, out DateTime bookingDateTime);
 
-            var searchResponse = await this._heroApiManager.GetScheduleAsync(id, bookingDateTime);
+            var searchResponse = await this._heroApiManager.GetScheduleAsync(productId, bookingDateTime);
             if (searchResponse.IsError())
             {
                 return this.ErrorResponseResult(searchResponse);
             }
 
-            return this.SuccessResponseResult(searchResponse.Models);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> GetPrice([FromQuery] int id, string dateCheckIn, int nights)
-        {
-            DateTime.TryParse(dateCheckIn, out DateTime bookingDateTime);
-
-            var searchResponse = await this._heroApiManager.GetProductPriceAsync(id, bookingDateTime, nights);
-            if (searchResponse.IsError())
+            if (!searchResponse.Models.Any())
             {
-                return this.ErrorResponseResult(searchResponse);
+                return this.ErrorResponseResult("The product not available for the selected date");
             }
 
-            var model = searchResponse.Model;
+            var getProductResponse = await this._heroApiManager.GetProductPriceAsync(productId, bookingDateTime);
+            if (getProductResponse.IsError())
+            {
+                return this.ErrorResponseResult(getProductResponse);
+            }
 
-            var discount = model.Commission * (50/100);
+            var model = getProductResponse.Model;
+
+            var discount = model.Commission * (50 / 100);
             var totalPriceAfterDiscount = model.TotalPrice - discount;
 
-            return this.SuccessResponseResult(new {
+            if (totalPriceAfterDiscount <= 0)
+            {
+                return this.ErrorResponseResult("The product not available for the selected date");
+            }
+
+            return this.SuccessResponseResult(new
+            {
                 Discount = discount,
                 TotalPrice = totalPriceAfterDiscount,
                 Currency = model.CurrencyIso

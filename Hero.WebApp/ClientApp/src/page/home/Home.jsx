@@ -54,12 +54,12 @@ export class Home extends Component {
         <FormGroup>
           <Input 
             value={this.state.keyword} 
-            onChange={this.formListener} 
+            onChange={this.formListener}
             type="text" 
             name="keyword" 
             placeholder="type something and hit enter" />
         </FormGroup>
-        {this.state.isSearching && <PopupSpinner />}
+        {this.state.isSearching && <PopupSpinner message="searching..." />}
       </Form>
         </section>
 

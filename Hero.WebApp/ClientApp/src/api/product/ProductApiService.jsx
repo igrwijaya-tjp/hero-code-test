@@ -9,6 +9,12 @@ class ProductApiService extends BaseApiService {
     const url = this.apiUrl + '/Search?keyword=' + keyword;
 
     return this.getRequest(url);
+  }
+
+  checkAvailability(productId, bookDate) {
+    const url = this.apiUrl + '/CheckAvailability?productId=' + productId + '&bookDate=' + bookDate;
+
+    return this.getRequest(url);
   } 
 }
 

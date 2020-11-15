@@ -12,12 +12,6 @@ namespace Hero.WebApp.DataModel.Hero
         [JsonProperty(PropertyName = "productId")]
         public int ProductId { get; set; }
 
-        [JsonProperty(PropertyName = "available")]
-        public bool IsAvailable { get; set; }
-
-        [JsonProperty(PropertyName = "minStay")]
-        public int MinStay { get; set; }
-
         #endregion Properties
     }
 }

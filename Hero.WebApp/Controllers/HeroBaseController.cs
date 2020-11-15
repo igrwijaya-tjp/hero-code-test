@@ -23,7 +23,7 @@ namespace Hero.WebApp.Controllers
             return this.Ok(new
             {
                 IsSuccess = false,
-                Data = message
+                Message = message
             });
         }
 
@@ -32,7 +32,7 @@ namespace Hero.WebApp.Controllers
             return this.Ok(new
             {
                 IsSuccess = false,
-                Data = baseResponse.GetErrorMessages()
+                Message = baseResponse.GetErrorMessages()
             });
         }
 

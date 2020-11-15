@@ -11,7 +11,7 @@ export class PopupSpinner extends Component {
     return (
         <Modal isOpen={true} size="sm">
             <ModalBody className="text-center">
-                <Spinner color="primary" /><br/>Searching...
+                <Spinner color="primary" /><br/> {this.props.message}
             </ModalBody>
         </Modal>
     );
