@@ -26,7 +26,7 @@ namespace Hero.WebApp.Service.Hero
                 var getRequestResponse = await _httpClient.GetAsync($"search?q={keyword}&lat=0&lng=0");
                 var apiResponse = getRequestResponse.EnsureSuccessStatusCode();
 
-                if (apiResponse.IsSuccessStatusCode)
+                if (!apiResponse.IsSuccessStatusCode)
                 {
                     response.AddErrorMessage($"Failed to send request with reason: {apiResponse.ReasonPhrase} and status code: {apiResponse.StatusCode}");
                     return response;
